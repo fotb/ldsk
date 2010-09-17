@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="com.noway.ldsk.vo.TcpVO" table="TCP">
+		<id name="networkSoftwareIdn" column="NETWORKSOFTWARE_IDN" type="integer" unsaved-value="undefined" />
+		<property name="computerIdn" type="integer" column="COMPUTER_IDN" />
+		<property name="address" type="string" column="ADDRESS" />
+		<property name="hostName" type="string" column="HOSTNAME" />
+	</class>
+</hibernate-mapping>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd">
+
+	<!-- Abstract Transactional BO Declaration -->
+	<bean id="transactionProxy" abstract="true"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="transactionAttributes">
+			<props>
+				<prop key="find*">PROPAGATION_SUPPORTS,readOnly</prop>
+				<prop key="get*">PROPAGATION_SUPPORTS,readOnly</prop>
+				<prop key="save*">PROPAGATION_REQUIRED</prop>
+				<prop key="update*">PROPAGATION_REQUIRED</prop>
+				<prop key="insert*">PROPAGATION_REQUIRED</prop>
+				<prop key="delete*">PROPAGATION_REQUIRED</prop>
+				<prop key="approve*">PROPAGATION_REQUIRED</prop>
+				<prop key="authorize*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- Business Object -->
+	<bean id="reportBO" parent="transactionProxy">
+		<property name="target">
+			<bean class="com.noway.ldsk.bo.ReportBOImpl">
+				<property name="computerDAO" ref="computerDAO" />
+				<property name="networkSoftwareDAO" ref="networkSoftwareDAO" />
+				<property name="tcpDAO" ref="tcpDAO" />
+				<property name="unmodeledDataDAO" ref="unmodeledDataDAO" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="computerReport" parent="transactionProxy">
+		<property name="target">
+			<bean class="com.noway.ldsk.bo.ComputerReportImpl">
+				<property name="reportBO" ref="reportBO" />
+				<property name="compSystemBO" ref="compSystemBO" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="compSystemBO" parent="transactionProxy">
+		<property name="target">
+			<bean class="com.noway.ldsk.bo.CompSystemBOImpl">
+				<property name="compSystemDAO" ref="compSystemDAO" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="hipsActionBO" parent="transactionProxy">
+		<property name="target">
+			<bean class="com.noway.ldsk.bo.HipsActionBOImpl">
+				<property name="hipsActionDAO" ref="hipsActionDAO" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="deviceControlActionBO" parent="transactionProxy">
+		<property name="target">
+			<bean class="com.noway.ldsk.bo.DeviceControlActionBOImpl">
+				<property name="deviceControlActionDAO" ref="deviceControlActionDAO" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="safeReport" parent="transactionProxy">
+		<property name="target">
+			<bean class="com.noway.ldsk.bo.SafeReportImpl">
+				<property name="hipsActionBO" ref="hipsActionBO" />
+				<property name="deviceControlActionBO" ref="deviceControlActionBO" />
+				<property name="reportBO" ref="reportBO" />
+				<property name="computerDAO" ref="computerDAO" />
+			</bean>
+		</property>
+	</bean>
+</beans>
