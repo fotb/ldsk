@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="com.noway.ldsk.vo.DeviceControlActionVO" table="DEVICECONTROLACTION">
+		<id name="deviceControlActionIdn" column="DEVICECONTROLACTION_IDN" type="integer" unsaved-value="undefined" />
+		<property name="computerIdn" type="integer" column="COMPUTER_IDN" />
+		<property name="description" type="string" column="DESCRIPTION" />
+		<property name="hardwareId" type="string" column="HARDWAREID" />
+		<property name="service" type="string" column="SERVICE" />
+		<property name="deviceClass" type="string" column="DEVICECLASS" />
+		<property name="enumerator" type="string" column="ENUMERATOR" />
+		<property name="vendorId" type="string" column="VENDORID" />
+		<property name="deviceId" type="string" column="DEVICEID" />
+		<property name="valumeSerial" type="string" column="VOLUMESERIAL" />
+		<property name="actionCode" type="integer" column="ACTIONCODE" />
+		<property name="actionDate" type="timestamp" column="ACTIONDATE" />
+		<property name="actionType" type="integer" column="ACTIONTYPE" />
+		<property name="userName" type="string" column="USERNAME" />
+		<property name="configGuid" type="string" column="CONFIGGUID" />
+	</class>
+</hibernate-mapping>

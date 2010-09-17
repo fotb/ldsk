@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="com.noway.ldsk.vo.ComputerVO" table="COMPUTER">
+		<id name="computerIdn" column="COMPUTER_IDN" type="integer" unsaved-value="undefined" />
+		<property name="deviceId" type="string" column="DEVICEID" />
+		<property name="type" type="string" column="TYPE" />
+		<property name="ntDomainController" type="string" column="NTDOMAINCONTROLLER" />
+		<property name="deviceName" type="string" column="DEVICENAME" />
+		<property name="description" type="string" column="DESCRIPTION" />
+		<property name="loginName" type="string" column="LOGINNAME" />
+		<property name="fullName" type="string" column="FULLNAME" />
+		<property name="displayName" type="string" column="DISPLAYNAME" />
+		<property name="swNumFiles" type="integer" column="SWNUMFILES" />
+		<property name="hwLastScanDate" type="date" column="HWLASTSCANDATE" />
+		<property name="swLastScanDate" type="date" column="SWLASTSCANDATE" />
+		<property name="vaLastScanDate" type="date" column="VALASTSCANDATE" />
+		<property name="spywarelastScanDate" type="date" column="SPYWARELASTSCANDATE" />
+		<property name="securitylastScanDate" type="date" column="SECURITYLASTSCANDATE" />
+		<property name="updateLastScanDate" type="date" column="UPDATELASTSCANDATE" />
+		<property name="userDefinedlastScanDate" type="date" column="USERDEFINEDLASTSCANDATE" />
+		<property name="blockedLastScanDate" type="date" column="BLOCKEDLASTSCANDATE" />
+		<property name="patchSwLastScanDate" type="date" column="PATCHSWLASTSCANDATE" />
+		<property name="patchDriversLastScanDate" type="date" column="PATCHDRIVERSLASTSCANDATE" />
+		<property name="patchAvLastScanDate" type="date" column="PATCHAVLASTSCANDATE" />
+		<property name="complianceLastScanDate" type="date" column="COMPLIANCELASTSCANDATE" />
+		<property name="inventoryServer" type="string" column="INVENTORYSERVER" />
+		<property name="notifyOnChange" type="integer" column="NOTIFY_ON_CHANGE" />
+		<property name="primaryOwner" type="string" column="PRIMARYOWNER" />
+		<property name="lastUpdInvSvr" type="date" column="LASTUPDINVSVR" />
+		<property name="scanType" type="string" column="SCANTYPE" />
+		<property name="domainName" type="string" column="DOMAINNAME" />
+		<property name="model" type="string" column="MODEL" />
+		<property name="manufacturer" type="string" column="MANUFACTURER" />
+		<property name="workgroup" type="string" column="WORKGROUP" />
+		<property name="modelNum" type="string" column="MODELNUM" />
+		<property name="flpyDrvCnt" type="string" column="FLPYDRVCNT" />
+		<property name="RamCache" type="integer" column="RAMCACHE" />
+		<property name="os2Comment" type="string" column="OS2COMMENT" />
+		<property name="netwareAddr" type="string" column="NETWAREADDR" />
+		<property name="mumMultiMedFiles" type="integer" column="NUMMULTIMEDFILES" />
+		<property name="multiMedSize" type="integer" column="MULTIMEDSIZE" />
+		<property name="multiMedExt" type="string" column="MULTIMEDEXT" />
+		<property name="computerExistsTime" type="integer" column="COMPUTEREXISTSTIME" />
+		<property name="lastDeployedOsImage" type="string" column="LASTDEPLOYEDOSIMAGE" />
+		<property name="coprocessor" type="string" column="COPROCESSOR" />
+		<property name="pmmu" type="string" column="PMMU" />
+		<property name="computerLocation" type="string" column="COMPUTERLOCATION" />
+		<property name="ldapLocation" type="string" column="LDAPLOCATION" />
+		<property name="ownerPhone" type="string" column="OWNERPHONE" />
+		<property name="ownerEmail" type="string" column="OWNEREMAIL" />
+		<property name="companyName" type="string" column="COMPANYNAME" />
+		<property name="ipmiGuid" type="string" column="IPMIGUID" />
+		<property name="amtGuid" type="string" column="AMTGUID" />
+		<property name="serverType" type="string" column="SERVERTYPE" />
+		<property name="hwMonitoringType" type="string" column="HWMONITORINGTYPE" />
+		<property name="mainBoardOemName" type="string" column="MAINBOARDOEM_NAME" />
+		<property name="systemOemName" type="string" column="SYSTEMOEM_NAME" />
+		<property name="workFlowStatusId" type="string" column="WORKFLOWSTATUSID" />
+		<property name="dsViewPort" type="integer" column="DSVIEWPORT" />
+		<property name="recordDate" type="date" column="RECORDDATE" />
+		<property name="computerName" type="string" column="COMPUTERNAME" />
+        
+	</class>
+		
+	<!--
+		<query name="getFundByFundCategory">
+			Select f from FundVO as f, FundInfoVO as fi where
+			fi.fundMarketCode = ? and fi.fundCode=f.fundCode order by f.fundCode
+		</query>
+		-->
+</hibernate-mapping>

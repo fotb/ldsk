@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN" "http://www.springframework.org/dtd/spring-beans-2.0.dtd">
+ 
+ <beans>
+ 
+   <bean id="com.report"
+         class="org.springframework.context.support.ClassPathXmlApplicationContext">
+     <constructor-arg>
+       <list>
+         <value>classpath*:spring/applicationContext-tx.xml</value>
+         <value>classpath*:spring/applicationContext-bo.xml</value>
+         <value>classpath*:spring/applicationContext-dao.xml</value>
+         <value>classpath*:spring/applicationContext-action.xml</value>
+       </list>
+     </constructor-arg>
+   </bean>
+ 
+ </beans>
