@@ -53,8 +53,8 @@ public class ComputerReportImpl implements IComputerReport{
 			fs = new POIFSFileSystem(resource.getInputStream());
 			wb = new HSSFWorkbook(fs);
 
-			final String sheet1Name = "设备详细衄1�7";
-			final String sheet2Name = "设备汇�1�7�表";
+			final String sheet1Name = "设备详细表";
+			final String sheet2Name = "设备汇总表";
           
 	        wb.setSheetName(0, sheet1Name);
 	        wb.setSheetName(1, sheet2Name);
@@ -196,7 +196,7 @@ public class ComputerReportImpl implements IComputerReport{
 		writer.writeToCurrentCell("序号");
 		writer.newCell(style);
 		//writer.writeToCurrentCell(properties.getValue(Constants.REPORT_HEADER_COMPUTERNAME));
-		writer.writeToCurrentCell("机器各1�7");
+		writer.writeToCurrentCell("机器名称");
 		writer.newCell(style);
 //		writer.writeToCurrentCell(properties.getValue(Constants.REPORT_HEADER_COMPUTERIP));
 		writer.writeToCurrentCell("IP");

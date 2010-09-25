@@ -63,6 +63,15 @@
 			</bean>
 		</property>
 	</bean>
+	
+	<bean id="unmodeledDataBO" parent="transactionProxy">
+		<property name="target">
+			<bean class="com.noway.ldsk.bo.UnmodeledDataBOImpl">
+				<property name="unmodeledDataDAO" ref="unmodeledDataDAO" />
+			</bean>
+		</property>
+	</bean>
+	
 	<bean id="safeReport" parent="transactionProxy">
 		<property name="target">
 			<bean class="com.noway.ldsk.bo.SafeReportImpl">

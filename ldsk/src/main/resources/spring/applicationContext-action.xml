@@ -6,5 +6,10 @@
 <beans>
 	<!-- Example of SAF2 action instantiated by Spring -->
     <bean id="helloWorldAction" class="com.noway.ldsk.action.HelloWorldAction" singleton="false" />
+    <bean id="deviceAction" class="com.noway.ldsk.action.DeviceAction" singleton="false">
+    	<property name="unmodeledDataBO" ref="unmodeledDataBO" />
+    	<property name="reportBO" ref="reportBO" />
+    	<property name="compSystemBO" ref="compSystemBO" />
+    </bean>
 </beans>
 

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE struts PUBLIC 
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+	<package name="myPackage" extends="struts-default">
+		<action name="index" class="com.noway.ldsk.action.IndexAction">
+			<result>/jsp/index.jsp</result>
+		</action>
+		<action name="helloWorld" class="helloWorldAction"> 
+			<result name="input">/jsp/index.jsp</result>
+			<result>/jsp/helloWorld.jsp</result>
+		</action>
+	</package>
+	
+	<package name="ldskPackage" extends="struts-default">
+		<action name="device" class="deviceAction">
+			<result>/jsp/devicelist.jsp</result>
+		</action>
+	</package>
+	<package name="ldskJsonPackage" extends="json-default" namespace="/">
+		<action name="devicecount" class="deviceAction" method="getAllCount">
+			<result type="json">
+				<param name="root">branchsJson</param>
+			</result>
+		</action>
+	</package>
+	
+</struts>
