@@ -44,25 +44,19 @@
             	<h3>Sub Content</h3>
             </div>
             
-            
+
             <div id="local">
-                <h3>Local Nav. Bar</h3>
                 <ul>
-                    <li><a href="#">Content page 1</a></li>
-                    <li><a href="#">Content page 2</a></li>
-                    <li><a href="#">Content page 3</a></li>
-                    <li><a href="#">Content page 4</a></li>
-                    <li><a href="#">Content page 5</a></li>
-                    <li><a href="#">Content page 6</a></li>
+                    <li><a href="devicecount.action">设备汇总</a></li>
+                    <li><a href="#">分区统计</a></li>
                 </ul>
             </div>
             
-            
             <div id="nav">
                 <div class="wrapper">
-                <h3>Nav. bar</h3>
+                <!-- <h3>Nav. bar</h3> -->
                 <ul class="clearfix">
-                     <li><a href="#">Menu 1</a></li>
+                     <li><a href="device.action">设备统计</a></li>
                      <li><a href="#">Menu 2</a></li>
                      <li><a href="#">Menu 3</a></li>
                      <li><a href="#">Menu 4</a></li>

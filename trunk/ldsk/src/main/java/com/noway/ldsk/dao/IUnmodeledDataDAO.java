@@ -11,4 +11,6 @@ public interface IUnmodeledDataDAO {
 	 */
 	@SuppressWarnings("unchecked")
 	Map findAllByMetaObjAttrRelationsIdn(String metaObjAttrRelationsIdn);
+	
+	Map<String, String> findAllBranch(String metaObjAttrRelationsIdn);
 }
