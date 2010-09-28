@@ -2,7 +2,7 @@
 
 /* NAV */
 	div#nav {
-        font-size: 0.8em;
+        font-size: 1.0em;
     }
     * html div#nav {
         /* hide ie/mac \*/
