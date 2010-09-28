@@ -35,7 +35,6 @@
         
         <div id="content" class="clearfix">
             <div id="main">
-            	<h3>Main Content</h3>
             	<decorator:body/>
                 <hr />
             </div>
@@ -47,22 +46,18 @@
 
             <div id="local">
                 <ul>
-                    <li><a href="devicecount.action">设备汇总</a></li>
-                    <li><a href="#">分区统计</a></li>
+                    <li><a href="devicetotal.action">设备汇总</a></li>
+                    <li><a href="device.action">分区统计</a></li>
                 </ul>
             </div>
-            
             <div id="nav">
                 <div class="wrapper">
                 <!-- <h3>Nav. bar</h3> -->
-                <ul class="clearfix">
-                     <li><a href="device.action">设备统计</a></li>
-                     <li><a href="#">Menu 2</a></li>
-                     <li><a href="#">Menu 3</a></li>
-                     <li><a href="#">Menu 4</a></li>
-                     <li><a href="#">Menu 5</a></li>
-                     <li class="last"><a href="#">Menu 6</a></li>
-                </ul>
+	                <ul class="clearfix">
+	                     <li><a href="devicetotal.action">设备统计</a></li>
+	                     <li class="last"><a href="#">安全信息统计</a></li>
+	                     <!-- <li class="last"><a href="#">Menu 5</a></li> -->
+	                </ul>
                 </div>
                 <hr />
             </div>
