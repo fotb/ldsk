@@ -15,6 +15,7 @@ import com.noway.ldsk.bo.IUnmodeledDataBO;
 import com.noway.ldsk.util.AppException;
 import com.noway.ldsk.util.Constants;
 import com.noway.ldsk.util.ReportPropertiesLocator;
+import com.noway.ldsk.util.StringUtil;
 import com.noway.ldsk.vo.CompSystemVO;
 import com.noway.ldsk.vo.ComputerVO;
 import com.noway.ldsk.vo.TcpVO;
@@ -202,7 +203,7 @@ public class DeviceAction extends ActionSupport {
 			for (Iterator iter = computerVOList.iterator(); iter.hasNext();) {
 				ComputerVO vo = (ComputerVO) iter.next();
 				deviceBuffer.append("{");
-				deviceBuffer.append(addJsonNode("deviceName", vo.getDeviceName(), false));
+				deviceBuffer.append(addJsonNode("deviceName", StringUtil.isNull(vo.getDeviceName()) ? "-" : vo.getDeviceName(), false));
 
 				final TcpVO tcpVO = (TcpVO)ipMap.get(String.valueOf(vo.getComputerIdn()));
 				deviceBuffer.append(addJsonNode("tcpAddress", tcpVO.getAddress() == null ? "-" : tcpVO.getAddress(), false));
