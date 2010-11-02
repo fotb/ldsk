@@ -13,6 +13,7 @@ import com.noway.ldsk.bo.ICompSystemBO;
 import com.noway.ldsk.bo.IReportBO;
 import com.noway.ldsk.bo.IUnmodeledDataBO;
 import com.noway.ldsk.util.AppException;
+import com.noway.ldsk.util.BranchPropertiesLocator;
 import com.noway.ldsk.util.Constants;
 import com.noway.ldsk.util.ReportPropertiesLocator;
 import com.noway.ldsk.util.StringUtil;
@@ -20,9 +21,8 @@ import com.noway.ldsk.vo.CompSystemVO;
 import com.noway.ldsk.vo.ComputerVO;
 import com.noway.ldsk.vo.TcpVO;
 import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.ActionSupport;
 
-public class DeviceAction extends ActionSupport {
+public class DeviceAction extends DefaultAction {
 	private static final long serialVersionUID = 5281845553348811536L;
 	private static final Logger logger = Logger.getLogger(DeviceAction.class);
 
@@ -76,10 +76,11 @@ public class DeviceAction extends ActionSupport {
 	@SuppressWarnings("unchecked")
 	@Override
 	public String execute() throws Exception {
-		Map<String, String> branchMap = unmodeledDataBO
-				.findAllBranch(ReportPropertiesLocator.getInstance(true)
-						.getValue(Constants.PROPERTIES_BRANCH_KEY));
+//		Map<String, String> branchMap = unmodeledDataBO
+//				.findAllBranch(ReportPropertiesLocator.getInstance(true)
+//						.getValue(Constants.PROPERTIES_BRANCH_KEY));
 
+		Map<String, String> branchMap = BranchPropertiesLocator.getInstance(true).getAll();
 		Map session = ActionContext.getContext().getSession();
 		session.put("BranchMap", branchMap);
 
@@ -105,51 +106,62 @@ public class DeviceAction extends ActionSupport {
 			buffer.append(addJsonNode("otherCount", String.valueOf(computerCount - dellCount - lenovoCount - hpCount), false));
 			
 			
-			
+			final Map branchNameMap = BranchPropertiesLocator.getInstance(true).getAll();
 			final Map branchMap = reportBO.getAllComputerWitchBranch();
 			final Map modelMap = compSystemBO.findAllToMap();
 			
 			StringBuffer branchBuffer = new StringBuffer(10000);
 			branchBuffer.append("[");
 			int count = 0;
-			for (Iterator iterator = branchMap.keySet().iterator(); iterator
+			for (Iterator iterator = branchNameMap.keySet().iterator(); iterator
 					.hasNext();) {
 				final String key = (String) iterator.next();
-				List computerVOList = (List) branchMap.get(key);
 				branchBuffer.append("{");
-				if(Constants.OTHER_DEPT_KEY.equals(key)) {
-		        	branchBuffer.append(addJsonNode("BranchName", "其他部门", false));	
-		        } else {
-		        	branchBuffer.append(addJsonNode("BranchName", key, false));
-		        }
-		        int dCount = 0;
+				branchBuffer.append(addJsonNode("BranchName", key, false));
+				
+				final String branchNameObj = (String)branchNameMap.get(key);
+				final String[] branchNameAry = branchNameObj.split(",");
+				int dCount = 0;
 		        int lCount = 0;
 		        int hCount = 0;
 		        int otherCount = 0;
-		        for (Iterator iter = computerVOList.iterator(); iter.hasNext();) {
-					ComputerVO vo = (ComputerVO) iter.next();
-					CompSystemVO compSystemVO = (CompSystemVO)modelMap.get(String.valueOf(vo.getComputerIdn()));
-					if(null != compSystemVO.getManufacturer() && compSystemVO.getManufacturer().indexOf("Dell") != -1) {
-						dCount++;
-					} else if(null != compSystemVO.getManufacturer() && compSystemVO.getManufacturer().indexOf("Lenovo") != -1) {
-						lCount++;
-					} else if(null != compSystemVO.getManufacturer() 
-							&& (compSystemVO.getManufacturer().indexOf("HP") != -1
-							|| compSystemVO.getManufacturer().indexOf("Hewlett-Packard") != -1)) {
-						hCount++;
-					}else {
-						otherCount++;
+				for (int i = 0; i < branchNameAry.length; i++) {
+					final String branchName = branchNameAry[i];
+					List computerVOList = (List) branchMap.get(branchName);
+					
+					if(null != computerVOList) {
+				        for (Iterator iter = computerVOList.iterator(); iter.hasNext();) {
+							ComputerVO vo = (ComputerVO) iter.next();
+							CompSystemVO compSystemVO = (CompSystemVO)modelMap.get(String.valueOf(vo.getComputerIdn()));
+							if(null != compSystemVO.getManufacturer() && compSystemVO.getManufacturer().indexOf("Dell") != -1) {
+								dCount++;
+							} else if(null != compSystemVO.getManufacturer() && compSystemVO.getManufacturer().indexOf("Lenovo") != -1) {
+								lCount++;
+							} else if(null != compSystemVO.getManufacturer() 
+									&& (compSystemVO.getManufacturer().indexOf("HP") != -1
+									|| compSystemVO.getManufacturer().indexOf("Hewlett-Packard") != -1)) {
+								hCount++;
+							}else {
+								otherCount++;
+							}
+				        }
 					}
-		        }
-		        count++;
+				}
+				count++;
 		        branchBuffer.append(addJsonNode("dCount", String.valueOf(dCount), false));
 		        branchBuffer.append(addJsonNode("lCount", String.valueOf(lCount), false));
 		        branchBuffer.append(addJsonNode("hCount", String.valueOf(hCount), false));
 		        branchBuffer.append(addJsonNode("oCount", String.valueOf(otherCount), true));
 				branchBuffer.append("}");
-				if(count < branchMap.size()) {
+				if(count < branchNameMap.size()) {
 					branchBuffer.append(",");	
 				}
+//				if(Constants.OTHER_DEPT_KEY.equals(key)) {
+//		        	branchBuffer.append(addJsonNode("BranchName", "其他部门", false));	
+//		        } else {
+//		        	branchBuffer.append(addJsonNode("BranchName", key, false));
+//		        }
+		        
 			}
 			branchBuffer.append("]");
 			buffer.append("\"Branchs\": "); 
@@ -164,16 +176,6 @@ public class DeviceAction extends ActionSupport {
 		logger.info(buffer.toString());
 		return SUCCESS;
 	}
-
-	private String addJsonNode(String nodeName, String nodeValue, boolean isEnd) {
-		StringBuffer buffer = new StringBuffer(1000);
-		buffer.append("\"" + nodeName + "\": ");
-		buffer.append("\"" + nodeValue + "\"");
-		if(!isEnd) {
-			buffer.append(",");
-		}
-		return buffer.toString();
-	}
 	
 	@SuppressWarnings("unchecked")
 	public String getBranchDevices() {
@@ -187,8 +189,8 @@ public class DeviceAction extends ActionSupport {
 	        final Map macMap = reportBO.findAllMacAddress();
 	        final Map positionMap = reportBO.findAllByMetaObjAttrRelationsIdn(ReportPropertiesLocator.getInstance(true).getValue(Constants.PROPERTIES_POSITION_KEY));
 	        final Map modelMap = compSystemBO.findAllToMap();	
-			
-			final List computerVOList = (List)branchMap.get(branchName);
+	        
+	        
 			StringBuffer buffer = new StringBuffer(10000);
 			
 			
@@ -200,49 +202,59 @@ public class DeviceAction extends ActionSupport {
 			int count = 0;
 			StringBuffer deviceBuffer = new StringBuffer(1000);
 			deviceBuffer.append("[");
-			for (Iterator iter = computerVOList.iterator(); iter.hasNext();) {
-				ComputerVO vo = (ComputerVO) iter.next();
-				deviceBuffer.append("{");
-				deviceBuffer.append(addJsonNode("deviceName", StringUtil.isNull(vo.getDeviceName()) ? "-" : vo.getDeviceName(), false));
-
-				final TcpVO tcpVO = (TcpVO)ipMap.get(String.valueOf(vo.getComputerIdn()));
-				deviceBuffer.append(addJsonNode("tcpAddress", tcpVO.getAddress() == null ? "-" : tcpVO.getAddress(), false));
-
-				
-				final Object macObj = macMap.get(String.valueOf(vo.getComputerIdn()));
-				
-				deviceBuffer.append(addJsonNode("macAddress", null == macObj ? "-" : (String)macObj, false));
-				final Object compSystemObj = modelMap.get(String.valueOf(vo.getComputerIdn()));
-				final CompSystemVO compSystemVO = null == compSystemObj ? null : (CompSystemVO)compSystemObj;
-				final String model = null == compSystemVO ? "-" : compSystemVO.getModel();
-				deviceBuffer.append(addJsonNode("model", null == model ? "-" : model, false));
-				
-
-				final Object positionObj = positionMap.get(String.valueOf(vo.getComputerIdn()));
-				
-				
-				deviceBuffer.append(addJsonNode("position", null == positionObj ? "-" : (String)positionObj, true));
-				if(null != compSystemVO) {
-					if(null != compSystemVO.getManufacturer() && compSystemVO.getManufacturer().indexOf("Dell") != -1) {
-						dCount++;
-					} else if(null != compSystemVO.getManufacturer() && compSystemVO.getManufacturer().indexOf("Lenovo") != -1) {
-						lCount++;
-					} else if(null != compSystemVO.getManufacturer() 
-							&& (compSystemVO.getManufacturer().indexOf("HP") != -1
-							|| compSystemVO.getManufacturer().indexOf("Hewlett-Packard") != -1)) {
-						hCount++;
-					}else {
-						otherCount++;
+	        
+	        
+	        final String[] branchNameAry = branchName.split(",");
+	        for (int i = 0; i < branchNameAry.length; i++) {
+				final String bName = branchNameAry[i];
+				final List computerVOList = (List)branchMap.get(bName);
+				if(null != computerVOList) {
+					for (Iterator iter = computerVOList.iterator(); iter.hasNext();) {
+						ComputerVO vo = (ComputerVO) iter.next();
+						deviceBuffer.append("{");
+						deviceBuffer.append(addJsonNode("deviceName", StringUtil.isNull(vo.getDeviceName()) ? "-" : vo.getDeviceName(), false));
+	
+						final TcpVO tcpVO = (TcpVO)ipMap.get(String.valueOf(vo.getComputerIdn()));
+						deviceBuffer.append(addJsonNode("tcpAddress", tcpVO.getAddress() == null ? "-" : tcpVO.getAddress(), false));
+	
+						
+						final Object macObj = macMap.get(String.valueOf(vo.getComputerIdn()));
+						
+						deviceBuffer.append(addJsonNode("macAddress", null == macObj ? "-" : (String)macObj, false));
+						final Object compSystemObj = modelMap.get(String.valueOf(vo.getComputerIdn()));
+						final CompSystemVO compSystemVO = null == compSystemObj ? null : (CompSystemVO)compSystemObj;
+						final String model = null == compSystemVO ? "-" : compSystemVO.getModel();
+						deviceBuffer.append(addJsonNode("model", null == model ? "-" : model, false));
+						
+	
+						final Object positionObj = positionMap.get(String.valueOf(vo.getComputerIdn()));
+						
+						
+						deviceBuffer.append(addJsonNode("position", null == positionObj ? "-" : (String)positionObj, true));
+						if(null != compSystemVO) {
+							if(null != compSystemVO.getManufacturer() && compSystemVO.getManufacturer().indexOf("Dell") != -1) {
+								dCount++;
+							} else if(null != compSystemVO.getManufacturer() && compSystemVO.getManufacturer().indexOf("Lenovo") != -1) {
+								lCount++;
+							} else if(null != compSystemVO.getManufacturer() 
+									&& (compSystemVO.getManufacturer().indexOf("HP") != -1
+									|| compSystemVO.getManufacturer().indexOf("Hewlett-Packard") != -1)) {
+								hCount++;
+							}else {
+								otherCount++;
+							}
+						} else {
+							otherCount++;
+						}
+						count++;
+						deviceBuffer.append("}");
+						if(count < computerVOList.size()) {
+							deviceBuffer.append(",");	
+						}
 					}
-				} else {
-					otherCount++;
-				}
-				count++;
-				deviceBuffer.append("}");
-				if(count < computerVOList.size()) {
-					deviceBuffer.append(",");	
 				}
 			}
+	        			
 			deviceBuffer.append("]");
 			buffer.append("{");
 			buffer.append(addJsonNode("branchName", branchName, false));

@@ -58,5 +58,10 @@ public class DeviceControlActionBOImpl implements IDeviceControlActionBO {
 		}
 		return map;
 	}
+
+	@Override
+	public int getCount() {
+		return deviceControlActionDAO.getCount();
+	}
 	
 }

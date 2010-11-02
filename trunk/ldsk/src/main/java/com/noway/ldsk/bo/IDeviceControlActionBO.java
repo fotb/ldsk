@@ -9,4 +9,5 @@ public interface IDeviceControlActionBO {
 	Map getDeviceControlActionWithActionCode();
 
 	Map getHipsActionGroupByComputerIdn();
+	int getCount();
 }

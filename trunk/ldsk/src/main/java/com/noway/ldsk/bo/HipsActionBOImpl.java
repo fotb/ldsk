@@ -57,4 +57,9 @@ public class HipsActionBOImpl implements IHipsActionBO {
 		}
 		return map;
 	}
+
+	@Override
+	public int getCount() {
+		return hipsActionDAO.getCount();
+	}
 }

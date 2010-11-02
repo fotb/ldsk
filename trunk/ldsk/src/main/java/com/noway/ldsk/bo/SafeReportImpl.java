@@ -18,6 +18,7 @@ import org.springframework.core.io.ClassPathResource;
 
 import com.noway.ldsk.dao.IComputerDAO;
 import com.noway.ldsk.util.AppException;
+import com.noway.ldsk.util.BranchPropertiesLocator;
 import com.noway.ldsk.util.Constants;
 import com.noway.ldsk.util.DateUtil;
 import com.noway.ldsk.util.ReportPropertiesLocator;
@@ -71,42 +72,70 @@ public class SafeReportImpl implements ISafeReport {
 		this.deviceControlActionBO = deviceControlActionBO;
 	}
 
-	private List getDataSource() throws AppException {
-		final Map branchMap = reportBO.getAllComputerWitchBranch();
+	public List<SafeReportDTO> getSafeReportDataSource() throws AppException {
+		final Map branchComputerMap = reportBO.getAllComputerWitchBranch();
 		final Map hipsGroupByComputerIdnMap = hipsActionBO.getHipsActionGroupByComputerIdn();
 		final Map deviceControlActionByComputerIdnMap = deviceControlActionBO.getHipsActionGroupByComputerIdn();
+		Map<String, String> branchMap = BranchPropertiesLocator.getInstance(true).getAll();
+		
 		Map hipsMap = new HashMap();
 		Map deviceControlMap = new HashMap();
-		for (final Iterator iterator = branchMap.keySet().iterator(); iterator.hasNext();) {
-			final String branch = (String) iterator.next();
-			final List computerVOList = (List) branchMap.get(branch);
-			for (Iterator iter1 = computerVOList.iterator(); iter1.hasNext();) {
-				final ComputerVO computerVO = (ComputerVO)iter1.next();
-				final List list = (List)hipsGroupByComputerIdnMap.get(computerVO.getComputerIdn());
-				if(null != list) {
-					if(hipsMap.containsKey(branch)) {
-						final List temp = (List)hipsMap.get(branch);
-						temp.addAll(list);
-					} else {
-						List temp = new ArrayList();
-						temp.addAll(list);
-						hipsMap.put(branch, temp);
-					}
-				}
-				
-				final List dcList = (List) deviceControlActionByComputerIdnMap.get(computerVO.getComputerIdn());
-				if (null != dcList) {
-					if (deviceControlMap.containsKey(branch)) {
-						final List temp = (List) deviceControlMap.get(branch);
-						temp.addAll(dcList);
-					} else {
-						List temp = new ArrayList();
-						temp.addAll(dcList);
-						deviceControlMap.put(branch, temp);
+		for (Iterator iter = branchMap.keySet().iterator(); iter.hasNext();) {
+			final String key = (String) iter.next();
+			final String[] branchNameAry = ((String)branchMap.get(key)).split(",");
+			List hipsTempList = new ArrayList();
+			List dcTempList = new ArrayList();
+			for (int i = 0; i < branchNameAry.length; i++) {
+				final String branchName = branchNameAry[i];
+				final List computerVOList = (List) branchComputerMap.get(branchName);
+				if(null != computerVOList) {
+					for (Iterator iter1 = computerVOList.iterator(); iter1.hasNext();) {
+						final ComputerVO computerVO = (ComputerVO)iter1.next();
+						final List list = (List)hipsGroupByComputerIdnMap.get(computerVO.getComputerIdn());
+						if(null != list) {
+							hipsTempList.addAll(list);
+						}
+						
+						final List dcList = (List) deviceControlActionByComputerIdnMap.get(computerVO.getComputerIdn());
+						if (null != dcList) {
+							dcTempList.addAll(dcList);
+						}
 					}
 				}
 			}
+			hipsMap.put(key, hipsTempList);
+			deviceControlMap.put(key, dcTempList);
 		}
+//		for (final Iterator iterator = branchComputerMap.keySet().iterator(); iterator.hasNext();) {
+//			final String branch = (String) iterator.next();
+//			final List computerVOList = (List) branchComputerMap.get(branch);
+//			for (Iterator iter1 = computerVOList.iterator(); iter1.hasNext();) {
+//				final ComputerVO computerVO = (ComputerVO)iter1.next();
+//				final List list = (List)hipsGroupByComputerIdnMap.get(computerVO.getComputerIdn());
+//				if(null != list) {
+//					if(hipsMap.containsKey(branch)) {
+//						final List temp = (List)hipsMap.get(branch);
+//						temp.addAll(list);
+//					} else {
+//						List temp = new ArrayList();
+//						temp.addAll(list);
+//						hipsMap.put(branch, temp);
+//					}
+//				}
+//				
+//				final List dcList = (List) deviceControlActionByComputerIdnMap.get(computerVO.getComputerIdn());
+//				if (null != dcList) {
+//					if (deviceControlMap.containsKey(branch)) {
+//						final List temp = (List) deviceControlMap.get(branch);
+//						temp.addAll(dcList);
+//					} else {
+//						List temp = new ArrayList();
+//						temp.addAll(dcList);
+//						deviceControlMap.put(branch, temp);
+//					}
+//				}
+//			}
+//		}
 		
 		
 		List result = new ArrayList();
@@ -190,7 +219,7 @@ public class SafeReportImpl implements ISafeReport {
 	        writer.writeTo(0, 1, 6, String.valueOf(totalDeviceControlCount));
 	        writer.newRow();
 	        
-	        List sourceList = getDataSource();
+	        List sourceList = getSafeReportDataSource();
 	        for (Iterator iter = sourceList.iterator(); iter.hasNext();) {
 				SafeReportDTO dto = (SafeReportDTO) iter.next();
 				writer.setCurrSheetNum(0);
