@@ -20,20 +20,27 @@ $(document).ready(function() {
 		//alert(data[0].computerCount);
 		alert(obj);
 		
-		$("#tdComputerCount").append(obj.computerCount);
-		$("#tdDellCount").append(obj.dellCount);
-		$("#tdLenovoCount").append(obj.lenovoCount);
-		$("#tdHPCount").append(obj.hpCount);
-		$("#tdOtherCount").append(obj.otherCount);
+		$("#totalCount").append(obj.totalCount);
+		$("#totalHipsCount").append(obj.totalHipsCount);
+		$("#totalDcCount").append(obj.totalDeviceControlCount);
 
 		$.each(obj.Branchs, function(i,item){
 			html = "<tr bgcolor='#FFFFFF'>";
-			html += "<td align='center' bgcolor='#F1F7F9'>" + item.BranchName + "</td>";
-			html += "<td>" + item.dCount + "</td>";
-			html += "<td>" + item.lCount + "</td>";
-			html += "<td>" + item.hCount + "</td>";
-			html += "<td>" + item.oCount + "</td>";
-			html += "</td>";
+			html += "<td align='center' bgcolor='#F1F7F9'>" + item.branchName + "</td>";
+			html += "<td>" + item.actionCode_109 + "</td>";
+			html += "<td>" + item.actionCode_113 + "</td>";
+			html += "<td>" + item.actionCode_106 + "</td>";
+			html += "<td>" + item.actionCode_105 + "</td>";
+			html += "<td>" + item.actionCode_104 + "</td>";
+			html += "<td>" + item.actionCode_100 + "</td>";
+			html += "<td>" + item.hipsOther + "</td>";
+			html += "<td>" + item.hipsTotalCount + "</td>";
+			//html += "<td>" + item.actionCode_116 + "</td>";
+			//html += "<td>" + item.actionCode_117 + "</td>";
+			html += "<td>" + item.actionCode_115 + "</td>";
+			html += "<td>" + item.hipsOther + "</td>";
+			html += "<td>" + item.dcTotalCount + "</td>";
+			html += "</tr>";
 			$("#tableComputer").append(html);
 		});
 
@@ -65,7 +72,8 @@ $(document).ready(function() {
 				<td width="80">总计</td>
 			</tr>
 			<tr>
-				<td>西湖辖区</td>
+				<td>全行总计</td>
+				<td id="totalCount">&nbsp;</td>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
@@ -73,11 +81,10 @@ $(document).ready(function() {
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
+				<td id="totalHipsCount">&nbsp;</td>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
+				<td id="totalDcCount">&nbsp;</td>
 			</tr>
 
 	</table>
