@@ -51,12 +51,10 @@ public class ReportBOImpl implements IReportBO {
 			String branchName = "";
 			if(null != obj) {
 				branchName = obj.toString();
-				
 			} else {
 				branchName = Constants.OTHER_DEPT_KEY;
 				logger.info("No branch name found with computer_idn = " + vo.getComputerIdn());
-			}
-			
+			}			
 			if(map.containsKey(branchName)) {
 				List list = (List) map.get(branchName);
 				list.add(vo);

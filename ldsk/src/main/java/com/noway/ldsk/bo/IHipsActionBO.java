@@ -9,4 +9,6 @@ public interface IHipsActionBO {
 	Map getHipsActionGroupByComputerIdn();
 
 	Map getHipsActionWithActionCode();
+	
+	int getCount();
 }

@@ -18,7 +18,7 @@ final public class BranchPropertiesLocator {
 	private BranchPropertiesLocator() {
 		InputStream inputStream = null;
 		try {
-			inputStream = this.getClass().getClassLoader().getResourceAsStream("branch.properties");
+			inputStream = this.getClass().getClassLoader().getResourceAsStream("branch_zh.properties");
 			Properties prop = new Properties();
 			prop.load(inputStream);
 			for (Iterator<Object> iter = prop.keySet().iterator(); iter.hasNext();) {

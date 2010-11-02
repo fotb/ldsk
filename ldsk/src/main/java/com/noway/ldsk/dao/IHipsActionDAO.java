@@ -5,4 +5,6 @@ import java.util.List;
 public interface IHipsActionDAO {
 	@SuppressWarnings("unchecked")
 	List findAll();
+	
+	int getCount();
 }
