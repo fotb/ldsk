@@ -33,7 +33,7 @@ $(document).ready(function() {
 			html += "<td>" + item.lCount + "</td>";
 			html += "<td>" + item.hCount + "</td>";
 			html += "<td>" + item.oCount + "</td>";
-			html += "</td>";
+			html += "</tr>";
 			$("#tableComputer").append(html);
 		});
 
