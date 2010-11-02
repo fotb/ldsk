@@ -43,17 +43,29 @@ $(document).ready(function() {
 			str += "<td align='center'>位置</td>";
 			str += "</tr>";	
 			$("#tableComputer").append(str);	
-			$.each(obj.devices, function(i,item){
+			if(obj.devices=="") {
 				html = "<tr bgcolor='#FFFFFF'>";
-				html += "<td align='center'>" + (i+1) + "</td>";
-				html += "<td>" + item.deviceName + "</td>";
-				html += "<td>" + item.tcpAddress + "</td>";
-				html += "<td>" + item.macAddress + "</td>";
-				html += "<td>" + item.model + "</td>";
-				html += "<td>" + item.position + "</td>";
+				html += "<td align='center'>-</td>";
+				html += "<td align='center'>-</td>";
+				html += "<td align='center'>-</td>";
+				html += "<td align='center'>-</td>";
+				html += "<td align='center'>-</td>";
+				html += "<td align='center'>-</td>";
 				html += "</td>";
 				$("#tableComputer").append(html);
-			});	
+			} else {
+				$.each(obj.devices, function(i,item){
+					html = "<tr bgcolor='#FFFFFF'>";
+					html += "<td align='center'>" + (i+1) + "</td>";
+					html += "<td>" + item.deviceName + "</td>";
+					html += "<td>" + item.tcpAddress + "</td>";
+					html += "<td>" + item.macAddress + "</td>";
+					html += "<td>" + item.model + "</td>";
+					html += "<td>" + item.position + "</td>";
+					html += "</td>";
+					$("#tableComputer").append(html);
+				});	
+			}
 		});
 		  return false;
 	});
@@ -66,7 +78,7 @@ $(document).ready(function() {
 	<s:form action="#" id="devicesList">
 		<table border="0">
 			<tr>
-				<td nowrap><s:select id="branchName" list="#session.BranchMap" listKey="key" listValue="value" headerKey="null" headerValue="--请选择--"/></td>
+				<td nowrap><s:select id="branchName" list="#session.BranchMap" listKey="value" listValue="key" headerKey="null" headerValue="--请选择--"/></td>
 				<td nowrap><input type="button" value="查询" id="searchBt"/></td>
 			</tr>
 		</table>
