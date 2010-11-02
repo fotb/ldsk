@@ -62,9 +62,9 @@ public class SafeReportAction extends DefaultAction {
 				SafeReportDTO dto = (SafeReportDTO) iter.next();
 				branchBuffer.append("{");
 				branchBuffer.append(addJsonNode("branchName", dto.getBranchName(), false));
-				branchBuffer.append(getBranchStatsInfo(dto.getHipsActionMap(), Constants.HIPS_ACTION_MAP));
+				branchBuffer.append(getBranchStatsInfo(dto.getHipsActionMap(), Constants.HIPS_ACTION_MAP, "hips"));
 				branchBuffer.append(addJsonNode("hipsTotalCount", String.valueOf(dto.getHipsActionCount()), false));
-				branchBuffer.append(getBranchStatsInfo(dto.getDeviceControlActionMap(), Constants.DEVICE_CONTROL_ACTION_MAP));
+				branchBuffer.append(getBranchStatsInfo(dto.getDeviceControlActionMap(), Constants.DEVICE_CONTROL_ACTION_MAP, "dc"));
 				branchBuffer.append(addJsonNode("dcTotalCount", String.valueOf(dto.getHipsActionCount()), true));
 				branchBuffer.append("}");
 				count++;
@@ -84,7 +84,7 @@ public class SafeReportAction extends DefaultAction {
 		return SUCCESS;
 	}
 	@SuppressWarnings("unchecked")
-	private String getBranchStatsInfo(Map actionMap, Map constantsMap) {
+	private String getBranchStatsInfo(Map actionMap, Map constantsMap, String flag) {
 		StringBuffer buffer = new StringBuffer(500);
 		List otherList = new ArrayList();
 		for (Iterator iter1 = actionMap.keySet().iterator(); iter1
@@ -92,13 +92,13 @@ public class SafeReportAction extends DefaultAction {
 			String actionCode = (String) iter1.next();
 			List tempList = (List) actionMap.get(actionCode);
 			if(constantsMap.containsKey(actionCode)) {
-				buffer.append(addJsonNode(actionCode, String.valueOf(tempList.size()), false));
+				buffer.append(addJsonNode("actionCode_" + actionCode, String.valueOf(tempList.size()), false));
 			} else {
 				otherList.addAll(tempList);
 			}
 		}
 		if(!otherList.isEmpty()) {
-			buffer.append(addJsonNode("hipsOther", String.valueOf(otherList.size()), false));
+			buffer.append(addJsonNode(flag + "other", String.valueOf(otherList.size()), false));
 		}
 		return buffer.toString();
 	}
