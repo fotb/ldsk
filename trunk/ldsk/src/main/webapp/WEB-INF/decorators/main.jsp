@@ -55,7 +55,7 @@
                 <!-- <h3>Nav. bar</h3> -->
 	                <ul class="clearfix">
 	                     <li><a href="devicetotal.action">设备统计</a></li>
-	                     <li class="last"><a href="#">安全信息统计</a></li>
+	                     <li class="last"><a href="safeReportCount.action">安全信息统计</a></li>
 	                     <!-- <li class="last"><a href="#">Menu 5</a></li> -->
 	                </ul>
                 </div>

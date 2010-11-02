@@ -7,18 +7,18 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-	<title>设备统计</title>
+	<title>安全信息统计</title>
 	<script language="JavaScript" type="text/javascript" src="<s:url value='/js/jquery-1.4.2.js'/>"></script>
 	<s:head />
 </head>
 <script>
 $(document).ready(function() {
-	$.getJSON("/ldsk/devicecount.action", function(data){
-		//alert(data);
+	$.getJSON("/ldsk/safeReportCountJson.action", function(data){
+		alert(data);
 		var obj = $.parseJSON(data);
 		//$("#test").html('test' + data[0].dellCount);
 		//alert(data[0].computerCount);
-		//alert(obj);
+		alert(obj);
 		
 		$("#tdComputerCount").append(obj.computerCount);
 		$("#tdDellCount").append(obj.dellCount);
@@ -45,24 +45,40 @@ $(document).ready(function() {
 	<s:form action="devicecount">
 		<div id="test"></div>
 		<table width="500" bgcolor="#E4E4E4" cellspacing="1" cellpadding="2" border="0" id="tableComputer">
-		<tr bgcolor="#F1F7F9">
-			<td rowspan="2" align="center" width="100">名称</td>
-			<td align="center">PC终端</td>
-			<td colspan="3" bgcolor="#FFFFFF" id="tdComputerCount"></td>
-		</tr>
-		<tr bgcolor="#F1F7F9">
-			<td align="center">DELL机</td>
-			<td align="center">Lenovo机</td>
-			<td align="center">HP机</td>
-			<td align="center">其它品牌</td>
-		</tr>
-		<tr bgcolor="#FFFFFF">
-			<td align="center" width="100" bgcolor="#F1F7F9">全行设备总计</td>
-			<td id="tdDellCount"></td>
-			<td id="tdLenovoCount"></td>
-			<td id="tdHPCount"></td>
-			<td id="tdOtherCount"></td>
-		</tr>
+			<tr bgcolor="#F1F7F9"	>
+			    <td width="80" rowspan="2">辖区</td>
+			    <td width="40" rowspan="2">总计</td>
+			    <td colspan="8">主机侵入保护安全活动</td>
+			    <td colspan="3">设备控制安全活动</td>
+		  	</tr>
+			<tr bgcolor="#F1F7F9">
+				<td width="80">检测到尝试修改可执行文件</td>
+				<td width="80">未授权程序程序试图执行</td>
+				<td width="80">不允许注册表写尝试</td>
+				<td width="80">此软件已安装</td>
+				<td width="80">程序添加到系统启动项目</td>
+				<td width="80">检测到不允许的文件访问</td>
+				<td width="80">其他事件</td>
+				<td width="80">总计</td>
+				<td width="80">已禁用存储设备</td>
+				<td width="80">其他事件</td>
+				<td width="80">总计</td>
+			</tr>
+			<tr>
+				<td>西湖辖区</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+			</tr>
 
 	</table>
 	</s:form>
