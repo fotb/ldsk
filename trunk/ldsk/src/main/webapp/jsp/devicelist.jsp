@@ -51,7 +51,7 @@ $(document).ready(function() {
 				html += "<td align='center'>-</td>";
 				html += "<td align='center'>-</td>";
 				html += "<td align='center'>-</td>";
-				html += "</td>";
+				html += "</tr>";
 				$("#tableComputer").append(html);
 			} else {
 				$.each(obj.devices, function(i,item){
@@ -62,7 +62,7 @@ $(document).ready(function() {
 					html += "<td>" + item.macAddress + "</td>";
 					html += "<td>" + item.model + "</td>";
 					html += "<td>" + item.position + "</td>";
-					html += "</td>";
+					html += "</tr>";
 					$("#tableComputer").append(html);
 				});	
 			}
