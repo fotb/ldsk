@@ -1,0 +1,1 @@
+native2ascii -encoding utf-8 branch.properties branch_zh.properties
