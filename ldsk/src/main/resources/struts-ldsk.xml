@@ -23,6 +23,12 @@
 		<action name="devicetotal" class="deviceAction">
 			<result>/jsp/devicecount.jsp</result>
 		</action>
+		<action name="safeReportCount" class="safeReportAction">
+			<result>/jsp/safereportcount.jsp</result>
+		</action>
+		<action name="safeReportDetail" class="safeReportAction">
+			<result>/jsp/safereportDetail.jsp</result>
+		</action>
 	</package>
 	<package name="ldskJsonPackage" extends="json-default" namespace="/">
 		<action name="devicecount" class="deviceAction" method="getAllCount">
@@ -33,6 +39,16 @@
 		<action name="branchDevices" class="deviceAction" method="getBranchDevices">
 			<result type="json">
 				<param name="root">branchDeviceJson</param>
+			</result>
+		</action>
+		<action name="safeReportCountJson" class="safeReportAction" method="getAllCount">
+			<result type="json">
+				<param name="root">safeCountJson</param>
+			</result>
+		</action>
+		<action name="safeReportDetailJson" class="safeReportAction" method="getSafeDetails">
+			<result type="json">
+				<param name="root">safeDetailsJson</param>
 			</result>
 		</action>
 	</package>

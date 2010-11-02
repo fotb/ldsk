@@ -11,5 +11,10 @@
     	<property name="reportBO" ref="reportBO" />
     	<property name="compSystemBO" ref="compSystemBO" />
     </bean>
+	<bean id="safeReportAction" class="com.noway.ldsk.action.SafeReportAction" singleton="false">
+    	<property name="safeReport" ref="safeReport" />
+    	<property name="hipsActionBO" ref="hipsActionBO" />
+    	<property name="deviceControlActionBO" ref="deviceControlActionBO" />
+    </bean>
 </beans>
 
