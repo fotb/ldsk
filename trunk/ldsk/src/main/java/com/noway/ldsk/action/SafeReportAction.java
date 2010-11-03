@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
@@ -34,9 +35,9 @@ public class SafeReportAction extends DefaultAction {
 //				.findAllBranch(ReportPropertiesLocator.getInstance(true)
 //						.getValue(Constants.PROPERTIES_BRANCH_KEY));
 
-		Map<String, String> branchMap = BranchPropertiesLocator.getInstance(true).getAll();
+		Properties branchProp = BranchPropertiesLocator.getInstance(true).getAll();
 		Map session = ActionContext.getContext().getSession();
-		session.put("BranchMap", branchMap);
+		session.put("BranchMap", branchProp);
 
 //		logger.info(getAllCount());
 		return SUCCESS;
@@ -61,7 +62,7 @@ public class SafeReportAction extends DefaultAction {
 			for (Iterator iter = list.iterator(); iter.hasNext();) {
 				SafeReportDTO dto = (SafeReportDTO) iter.next();
 				branchBuffer.append("{");
-				branchBuffer.append(addJsonNode("branchName", dto.getBranchName(), false));
+				branchBuffer.append(addJsonNode("branchName", dto.getBranchName().substring(3, dto.getBranchName().length()), false));
 				branchBuffer.append(getBranchStatsInfo(dto.getHipsActionMap(), Constants.HIPS_ACTION_MAP, "hips"));
 				branchBuffer.append(addJsonNode("hipsTotalCount", String.valueOf(dto.getHipsActionCount()), false));
 				branchBuffer.append(getBranchStatsInfo(dto.getDeviceControlActionMap(), Constants.DEVICE_CONTROL_ACTION_MAP, "dc"));

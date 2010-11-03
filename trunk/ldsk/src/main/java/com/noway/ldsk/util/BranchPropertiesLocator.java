@@ -3,7 +3,6 @@ package com.noway.ldsk.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
@@ -14,17 +13,13 @@ final public class BranchPropertiesLocator {
 
 	private final static BranchPropertiesLocator INSTANCE = new BranchPropertiesLocator();
 	Map<String, String> map = new HashMap<String, String>();
-	
+	Properties prop = null;
 	private BranchPropertiesLocator() {
 		InputStream inputStream = null;
 		try {
 			inputStream = this.getClass().getClassLoader().getResourceAsStream("branch_zh.properties");
-			Properties prop = new Properties();
+			prop = new Properties();
 			prop.load(inputStream);
-			for (Iterator<Object> iter = prop.keySet().iterator(); iter.hasNext();) {
-				String key = (String) iter.next();
-				map.put(key, prop.getProperty(key));
-			}
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		} finally {
@@ -49,9 +44,9 @@ final public class BranchPropertiesLocator {
 	}
 
 	public String getValue(String key) {
-		return map.get(key);
+		return prop.get(key) == null ? "" : prop.get(key).toString();
 	}
-	public Map<String, String> getAll() {
-		return map;
+	public Properties getAll() {
+		return prop;
 	}
 }
