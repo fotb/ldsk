@@ -1,36 +1,132 @@
 /* A CSS Framework by Mike Stenhouse of Content with Style */
-
-@import url("nav-horizontal.css");
-
-/* NAV BAR AT THE TOP, LOCAL NAVIGATION ON THE LEFT AND ONE COLUMN OF CONTENT */
-    div#content {
-        position: relative;
-        width: 701px;
-        
-        margin: 0 auto 20px auto;
-        padding: 0;
-        
-        text-align: left;
+/*@import url("nav-horizontal.css");*/
+	div#nav {
+        font-size: 1.0em;
     }
-    div#main {
-        float: right;
-        width: 500px;
-        display: inline;
+    * html div#nav {
+        /* hide ie/mac \*/
+        height: 1%;
+        /* end hide */
     }
-    div#local {
-        float: left;
-        width: 200px;
-        display: inline;
-    }
-    div#sub {
-        display: none;
-    }
-    div#nav {
+    div#nav div.wrapper {
         position: absolute;
-        top: -15px;
         left: 0;
+        bottom: 0;
         width: 100%;
-        
-        text-align: left;
     }
+/* NAV BAR AT THE TOP, LOCAL NAVIGATION ON THE LEFT AND ONE COLUMN OF CONTENT */
+div#content {
+	position: relative;
+	/*width: 701px;*/
+	margin: 0 auto 20px auto;
+	padding: 0;
+	text-align: left;
+}
+
+div#main {
+	/*float: right;*/
+	width: 900px;
+	display: inline;
+}
+
+div#local {
+	float: left;
+	width: 200px;
+	display: inline;
+}
+
+div#sub {
+	display: none;
+}
+
+div#nav {
+	position: absolute;
+	top: -15px;
+	left: 0;
+	width: 100%;
+	text-align: left;
+}
+
+.navMenu,.navMenu ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.navMenu {
+	z-index: 100;
+	position: relative;
+}
+
+.navMenu li {
+	border-left: 1px solid #000;
+	float: left;
+	margin: 0;
+	padding: 0;
+	position: relative;
+}
+
+.navMenu li a,.navMenu li a:link,.navMenu li a:active,.navMenu li a:visited
+	{
+	font: bold 1.22em/ 25px Arial, Helvetica, sans-serif;
+	background: #565656;
+	color: #959595;
+	display: block;
+	padding: 0 9px;
+	text-transform: lowercase;
+	text-decoration: none;
+}
+
+.navMenu li a:hover {
+	background: #ccc;
+	color: #000;
+}
+
+#navMenu-one li:hover a,#navMenu-one li.sfHover a {
+	background: #ccc;
+	color: #000;
+}
+
+#navMenu-one li:hover ul a,#navMenu-one li.sfHover ul a {
+	background: #565656;
+	color: #959595;
+}
+
+#navMenu-one li:hover ul a:hover,#navMenu-one li.sfHover ul a:hover {
+	background: #ccc;
+	color: #000;
+}
+
+.navMenu ul {
+	background: #565656;
+	border-bottom: 1px solid #000;
+	list-style: none;
+	margin: 0;
+	width: 80px;
+	position: absolute;
+	top: -999em;
+	left: -1px;
+}
+
+.navMenu li:hover ul,.navMenu li.sfHover ul {
+	top: 25px;
+}
+
+.navMenu ul li {
+	border: 0;
+	float: none;
+}
+
+.navMenu ul a {
+	border: 1px solid #000;
+	border-bottom: 0;
+	padding-right: 20px;
+	width: 80px;
+	white-space: nowrap;
+}
+
+.navMenu ul a:hover {
+	background: #ccc;
+	color: #000;
+}
 /* END CONTENT */

@@ -1,8 +1,13 @@
 package com.noway.ldsk.action;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -32,6 +37,7 @@ public class DeviceAction extends DefaultAction {
 	
 	private String branchsJson;
 	private String branchDeviceJson;
+	
 	
 	public String getBranchDeviceJson() {
 		return branchDeviceJson;
@@ -80,10 +86,17 @@ public class DeviceAction extends DefaultAction {
 //				.findAllBranch(ReportPropertiesLocator.getInstance(true)
 //						.getValue(Constants.PROPERTIES_BRANCH_KEY));
 
-		Map<String, String> branchMap = BranchPropertiesLocator.getInstance(true).getAll();
+		Properties branchProp = BranchPropertiesLocator.getInstance(true).getAll();
+		final List keyList = getSortedKeyList(branchProp);
+		TreeMap map = new TreeMap();
+		for (Iterator iter = keyList.iterator(); iter.hasNext();) {
+			String key = (String) iter.next();
+			map.put(key.substring(3, key.length()), branchProp.getProperty(key));
+		}
+		
 		Map session = ActionContext.getContext().getSession();
-		session.put("BranchMap", branchMap);
-
+		session.put("BranchList", map);
+		session.put("SubBranchList", new ArrayList());
 //		logger.info(getAllCount());
 		return SUCCESS;
 	}
@@ -106,20 +119,23 @@ public class DeviceAction extends DefaultAction {
 			buffer.append(addJsonNode("otherCount", String.valueOf(computerCount - dellCount - lenovoCount - hpCount), false));
 			
 			
-			final Map branchNameMap = BranchPropertiesLocator.getInstance(true).getAll();
+			final Properties branchNameProp = BranchPropertiesLocator.getInstance(true).getAll();
 			final Map branchMap = reportBO.getAllComputerWitchBranch();
 			final Map modelMap = compSystemBO.findAllToMap();
+			
+			final List keyList = getSortedKeyList(branchNameProp);
+			
 			
 			StringBuffer branchBuffer = new StringBuffer(10000);
 			branchBuffer.append("[");
 			int count = 0;
-			for (Iterator iterator = branchNameMap.keySet().iterator(); iterator
+			for (Iterator iterator = keyList.iterator(); iterator
 					.hasNext();) {
 				final String key = (String) iterator.next();
 				branchBuffer.append("{");
-				branchBuffer.append(addJsonNode("BranchName", key, false));
+				branchBuffer.append(addJsonNode("BranchName", key.substring(3, key.length()), false));
 				
-				final String branchNameObj = (String)branchNameMap.get(key);
+				final String branchNameObj = (String)branchNameProp.get(key);
 				final String[] branchNameAry = branchNameObj.split(",");
 				int dCount = 0;
 		        int lCount = 0;
@@ -153,7 +169,7 @@ public class DeviceAction extends DefaultAction {
 		        branchBuffer.append(addJsonNode("hCount", String.valueOf(hCount), false));
 		        branchBuffer.append(addJsonNode("oCount", String.valueOf(otherCount), true));
 				branchBuffer.append("}");
-				if(count < branchNameMap.size()) {
+				if(count < keyList.size()) {
 					branchBuffer.append(",");	
 				}
 //				if(Constants.OTHER_DEPT_KEY.equals(key)) {
@@ -276,5 +292,23 @@ public class DeviceAction extends DefaultAction {
 		}
 		
 		return SUCCESS;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private List getSortedKeyList(Properties branchProp) {
+		List keyList = new ArrayList();
+		for (final Iterator iter = branchProp.keySet().iterator(); iter.hasNext();) {
+			final String key = (String) iter.next();
+			keyList.add(key);
+		}
+		Collections.sort(keyList, new Comparator<String>(){
+			@Override
+			public int compare(String o1, String o2) {
+				final String key1 = o1.substring(1, 3);
+				final String key2 = o2.substring(1, 3);
+				return key1.compareTo(key2);
+			}
+		});
+		return keyList;
 	}
 }

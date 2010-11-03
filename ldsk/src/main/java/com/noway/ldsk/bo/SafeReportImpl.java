@@ -3,10 +3,13 @@ package com.noway.ldsk.bo;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -76,13 +79,15 @@ public class SafeReportImpl implements ISafeReport {
 		final Map branchComputerMap = reportBO.getAllComputerWitchBranch();
 		final Map hipsGroupByComputerIdnMap = hipsActionBO.getHipsActionGroupByComputerIdn();
 		final Map deviceControlActionByComputerIdnMap = deviceControlActionBO.getHipsActionGroupByComputerIdn();
-		Map<String, String> branchMap = BranchPropertiesLocator.getInstance(true).getAll();
-		
+		Properties branchProp = BranchPropertiesLocator.getInstance(true).getAll();
+		List keyList = getSortedKeyList(branchProp);
+
 		Map hipsMap = new HashMap();
 		Map deviceControlMap = new HashMap();
-		for (Iterator iter = branchMap.keySet().iterator(); iter.hasNext();) {
-			final String key = (String) iter.next();
-			final String[] branchNameAry = ((String)branchMap.get(key)).split(",");
+		for (Iterator iter = keyList.iterator(); iter.hasNext();) {
+			String key = (String) iter.next();
+
+			final String[] branchNameAry = ((String)branchProp.get(key)).split(",");
 			List hipsTempList = new ArrayList();
 			List dcTempList = new ArrayList();
 			for (int i = 0; i < branchNameAry.length; i++) {
@@ -140,7 +145,7 @@ public class SafeReportImpl implements ISafeReport {
 		
 		List result = new ArrayList();
 		
-		for (final Iterator iter = branchMap.keySet().iterator(); iter.hasNext();) {
+		for (Iterator iter = keyList.iterator(); iter.hasNext();) {
 			final String branchName = (String)iter.next();
 			SafeReportDTO dto = new SafeReportDTO();
 			dto.setBranchName(branchName);
@@ -180,6 +185,23 @@ public class SafeReportImpl implements ISafeReport {
 			result.add(dto);
 		}
 		return result;
+	}
+
+	private List getSortedKeyList(Properties branchProp) {
+		List keyList = new ArrayList();
+		for (final Iterator iter = branchProp.keySet().iterator(); iter.hasNext();) {
+			final String key = (String) iter.next();
+			keyList.add(key);
+		}
+		Collections.sort(keyList, new Comparator<String>(){
+			@Override
+			public int compare(String o1, String o2) {
+				final String key1 = o1.substring(1, 3);
+				final String key2 = o2.substring(1, 3);
+				return key1.compareTo(key2);
+			}
+		});
+		return keyList;
 	}
 
 	public HSSFWorkbook renderExcelReport() throws AppException {
