@@ -27,7 +27,7 @@
 			<result>/jsp/safereportcount.jsp</result>
 		</action>
 		<action name="safeReportDetail" class="safeReportAction">
-			<result>/jsp/safereportDetail.jsp</result>
+			<result>/jsp/safelist.jsp</result>
 		</action>
 	</package>
 	<package name="ldskJsonPackage" extends="json-default" namespace="/">

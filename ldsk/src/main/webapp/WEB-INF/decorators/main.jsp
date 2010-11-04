@@ -17,9 +17,9 @@
 	<script language="JavaScript" type="text/javascript" src="<s:url value='/js/jquery-1.4.2.js'/>"></script>
 	<script language="JavaScript" type="text/javascript">
         window.onload = function(){
-            if(!NiftyCheck()) {
-                return;
-            }
+            //if(!NiftyCheck()) {
+            //    return;
+            //}
             // perform niftycorners rounding
             // eg.
             // Rounded("blockquote","tr bl","#ECF1F9","#CDFFAA","smooth border #88D84F");
@@ -31,7 +31,9 @@
     		}, function() {
     		});
     		if (document.all) {
+        		alert("1");
     			$("#nav-one li").hoverClass("sfHover");
+    			alert("2");
     		}
     	});
 
@@ -86,7 +88,7 @@
 						<li><a href="safeReportCount.action">安全信息统计</a>
 						<ul style="opacity: 0.9999; display: block;">
 							<li><a href="safeReportCount.action">统计汇总</a></li>
-							<li><a href="#item2.2">分区统计</a></li>
+							<li><a href="safeReportDetail.action">分区统计</a></li>
 						</ul>
 						</li>
 					</ul>

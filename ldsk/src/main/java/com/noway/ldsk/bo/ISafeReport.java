@@ -10,4 +10,6 @@ public interface ISafeReport {
 	HSSFWorkbook renderExcelReport() throws AppException;
 	@SuppressWarnings("unchecked")
 	List getSafeReportDataSource() throws AppException;
+	@SuppressWarnings("unchecked")
+	List getSafeDetailBySubBranchBranchAndActionType(final String subBranchName, final String safeType, String actionCode) throws AppException;
 }

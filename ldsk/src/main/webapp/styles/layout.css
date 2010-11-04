@@ -21,7 +21,7 @@
     
     /* HEADER */
         div#header {
-            margin: 0 0 5em 0;
+            margin: 0 0 3.4em 0;
             padding: 40px 20px;
             
             color: white;
@@ -84,7 +84,16 @@
     /* END FOOTER */
 /* END LAYOUT */
 
-
+#loading{
+	z-index: 100;
+	position: absolute;
+	left: 10px;
+	top: 35px;
+  	/*top: 20px;
+  	
+  	*/
+	
+}
 
 
 /* UL.SUBNAV */

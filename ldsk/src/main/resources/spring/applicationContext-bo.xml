@@ -42,6 +42,13 @@
 			</bean>
 		</property>
 	</bean>
+	<bean id="computerBO" parent="transactionProxy">
+		<property name="target">
+			<bean class="com.noway.ldsk.bo.ComputerBOImpl">
+				<property name="computerDAO" ref="computerDAO" />
+			</bean>
+		</property>
+	</bean>
 	<bean id="compSystemBO" parent="transactionProxy">
 		<property name="target">
 			<bean class="com.noway.ldsk.bo.CompSystemBOImpl">

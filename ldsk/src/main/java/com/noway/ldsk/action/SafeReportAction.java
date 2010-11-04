@@ -6,15 +6,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
+import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
+import org.apache.struts2.ServletActionContext;
+
+import com.noway.ldsk.bo.IComputerBO;
 import com.noway.ldsk.bo.IDeviceControlActionBO;
 import com.noway.ldsk.bo.IHipsActionBO;
+import com.noway.ldsk.bo.IReportBO;
 import com.noway.ldsk.bo.ISafeReport;
 import com.noway.ldsk.util.AppException;
+import com.noway.ldsk.util.BranchBean;
 import com.noway.ldsk.util.BranchPropertiesLocator;
 import com.noway.ldsk.util.Constants;
+import com.noway.ldsk.util.DateUtil;
+import com.noway.ldsk.vo.ComputerVO;
+import com.noway.ldsk.vo.DeviceControlActionVO;
+import com.noway.ldsk.vo.HipsActionVO;
 import com.noway.ldsk.vo.SafeReportDTO;
+import com.noway.ldsk.vo.TcpVO;
 import com.opensymphony.xwork2.ActionContext;
 
 public class SafeReportAction extends DefaultAction {
@@ -24,10 +35,18 @@ public class SafeReportAction extends DefaultAction {
 	private ISafeReport safeReport;
 	private IHipsActionBO hipsActionBO;
 	private IDeviceControlActionBO deviceControlActionBO;
+	private IReportBO reportBO;
+	private IComputerBO computerBO;
 	
 	private String safeCountJson;
 	private String safeDetailsJson;
-	
+	private List<BranchBean> bList = new ArrayList<BranchBean>();
+	public List<BranchBean> getBList() {
+		return bList;
+	}
+	public void setBList(List<BranchBean> list) {
+		bList = list;
+	}
 	@SuppressWarnings("unchecked")
 	@Override
 	public String execute() throws Exception {
@@ -36,8 +55,28 @@ public class SafeReportAction extends DefaultAction {
 //						.getValue(Constants.PROPERTIES_BRANCH_KEY));
 
 		Properties branchProp = BranchPropertiesLocator.getInstance(true).getAll();
+		final List keyList = getSortedKeyList(branchProp);
+		//TreeMap map = new TreeMap();
+		for (Iterator iter = keyList.iterator(); iter.hasNext();) {
+			String key = (String) iter.next();
+			BranchBean bean = new BranchBean();
+			bean.setBranchName(key.substring(3, key.length()));
+			bean.setBranchValue(branchProp.getProperty(key));
+			bList.add(bean);
+			//map.put(key.substring(3, key.length()), branchProp.getProperty(key));
+		}
+		
 		Map session = ActionContext.getContext().getSession();
-		session.put("BranchMap", branchProp);
+		//session.put("BranchList", map);
+		session.put("SubBranchList", new ArrayList());
+		
+		Map hipsActionMap = Constants.HIPS_ACTION_MAP;
+		hipsActionMap.put("other", "其他事件");
+		Map deviceControlMap = Constants.DEVICE_CONTROL_ACTION_MAP;
+		deviceControlMap.put("other", "其他事件");
+		session.put("hipsActionMap", hipsActionMap);
+		session.put("deviceControlMap", deviceControlMap);
+		
 
 //		logger.info(getAllCount());
 		return SUCCESS;
@@ -81,6 +120,8 @@ public class SafeReportAction extends DefaultAction {
 	        logger.info(jsonBuffer.toString());
 		} catch (AppException e) {
 			logger.error("Error occured:" + e.getMessage(), e);
+		} catch (Exception e) {
+			logger.error("Error occured:" + e.getMessage(), e);
 		}
 		return SUCCESS;
 	}
@@ -104,6 +145,86 @@ public class SafeReportAction extends DefaultAction {
 		return buffer.toString();
 	}
 	
+	@SuppressWarnings("unchecked")
+	public String getSafeDetails() {
+		HttpServletRequest request = (HttpServletRequest) ActionContext.getContext().get(ServletActionContext.HTTP_REQUEST);
+		final String branchName = request.getParameter("branchName");
+		final String safeType = request.getParameter("safeType");
+		final String hipsActionCode = request.getParameter("hipsActionType");
+		final String deviceControlCode = request.getParameter("deviceControlType");
+    	
+		try {
+			Map ipMap = reportBO.findAllIpAddress();
+	    	Map computerMap = computerBO.findAllToMap();
+	    	
+			List list = new ArrayList();
+			String jsonStr = "";
+			if("1".equals(safeType)) {
+				list = safeReport.getSafeDetailBySubBranchBranchAndActionType(branchName, safeType, hipsActionCode);
+				jsonStr = generateHipsJson(ipMap, computerMap, list);
+			} else {
+				list = safeReport.getSafeDetailBySubBranchBranchAndActionType(branchName, safeType, deviceControlCode);
+				jsonStr = generateDCJson(ipMap, computerMap, list);
+			}
+			safeDetailsJson = jsonStr;
+			logger.info(jsonStr);
+		} catch(Exception e) {
+			logger.error("Error occured: " + e.getMessage(), e);
+		}
+		
+		
+		return SUCCESS;
+	}
+	@SuppressWarnings("unchecked")
+	private String generateHipsJson(Map ipMap, Map computerMap, List list) {
+		StringBuffer jsonBuffer = new StringBuffer(1000);
+		jsonBuffer.append("{\"details\": [");
+		int index = 1;
+		for (Iterator iter = list.iterator(); iter.hasNext();) {
+			HipsActionVO vo = (HipsActionVO) iter.next();
+			jsonBuffer.append("{");
+			jsonBuffer.append(addJsonNode("index", String.valueOf(index), false));
+			final ComputerVO computerVO = (ComputerVO) computerMap.get(String.valueOf(vo.getComputerIdn().intValue()));
+			jsonBuffer.append(addJsonNode("deviceName", computerVO.getDeviceName(), false));
+			final TcpVO tcpVO = (TcpVO)ipMap.get(String.valueOf(vo.getComputerIdn().intValue()));
+			jsonBuffer.append(addJsonNode("IP", tcpVO.getAddress(), false));
+			jsonBuffer.append(addJsonNode("actionDate", DateUtil.format(vo.getActionDate(), "yyyy-MM-dd HH:mm:ss"), false));
+			jsonBuffer.append(addJsonNode("appName", vo.getApplication().replace("\\", "-"), true));
+			jsonBuffer.append("}");
+			index++;
+			if(index <= list.size()) {
+				jsonBuffer.append(",");	
+			}
+		}
+		jsonBuffer.append("]}");
+		return jsonBuffer.toString();
+	}
+	
+	@SuppressWarnings("unchecked")
+	private String generateDCJson(Map ipMap, Map computerMap, List list) {
+		StringBuffer jsonBuffer = new StringBuffer(1000);
+		jsonBuffer.append("{\"details\": [");
+		int index = 1;
+		for (Iterator iter = list.iterator(); iter.hasNext();) {
+			DeviceControlActionVO vo = (DeviceControlActionVO) iter.next();
+			jsonBuffer.append("{");
+			jsonBuffer.append(addJsonNode("index", String.valueOf(index), false));
+			final ComputerVO computerVO = (ComputerVO) computerMap.get(String.valueOf(vo.getComputerIdn().intValue()));
+			jsonBuffer.append(addJsonNode("deviceName", computerVO.getDeviceName(), false));
+			final TcpVO tcpVO = (TcpVO)ipMap.get(String.valueOf(vo.getComputerIdn().intValue()));
+			jsonBuffer.append(addJsonNode("IP", tcpVO.getAddress(), false));
+			jsonBuffer.append(addJsonNode("actionDate", DateUtil.format(vo.getActionDate(), "yyyy-MM-dd HH:mm:ss"), false));
+			jsonBuffer.append(addJsonNode("desc", vo.getDescription(), false));
+			jsonBuffer.append(addJsonNode("deviceId", vo.getDeviceId(), true));
+			jsonBuffer.append("}");
+			index++;
+			if(index <= list.size()) {
+				jsonBuffer.append(",");	
+			}
+		}
+		jsonBuffer.append("]}");
+		return jsonBuffer.toString();
+	}
 	public ISafeReport getSafeReport() {
 		return safeReport;
 	}
@@ -139,5 +260,17 @@ public class SafeReportAction extends DefaultAction {
 
 	public void setSafeDetailsJson(String safeDetailsJson) {
 		this.safeDetailsJson = safeDetailsJson;
+	}
+	public IReportBO getReportBO() {
+		return reportBO;
+	}
+	public void setReportBO(IReportBO reportBO) {
+		this.reportBO = reportBO;
+	}
+	public IComputerBO getComputerBO() {
+		return computerBO;
+	}
+	public void setComputerBO(IComputerBO computerBO) {
+		this.computerBO = computerBO;
 	}
 }

@@ -15,6 +15,8 @@
     	<property name="safeReport" ref="safeReport" />
     	<property name="hipsActionBO" ref="hipsActionBO" />
     	<property name="deviceControlActionBO" ref="deviceControlActionBO" />
+    	<property name="reportBO" ref="reportBO" />
+    	<property name="computerBO" ref="computerBO" />
     </bean>
 </beans>
 
