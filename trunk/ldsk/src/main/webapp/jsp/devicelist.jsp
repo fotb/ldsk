@@ -105,7 +105,7 @@ function changeSubBranchName() {
 				<td nowrap><input type="button" value="查询" id="searchBt"/></td>
 			</tr>
 		</table>
-		<table width="500" bgcolor="#E4E4E4" cellspacing="1" cellpadding="2" border="0" id="tableTotalComputer">
+		<table width="800" bgcolor="#E4E4E4" cellspacing="1" cellpadding="2" border="0" id="tableTotalComputer">
 			<tr bgcolor="#F1F7F9">
 				<td align="center" colspan="2">总计</td>
 				<td align="center">DELL机</td>
@@ -121,7 +121,7 @@ function changeSubBranchName() {
 				<td align="center" id="tdOtherCount">&nbsp;</td>
 			</tr>
 </table>
-<table width="500" bgcolor="#E4E4E4" cellspacing="1" cellpadding="2" border="0" id="tableComputer">
+<table width="800" bgcolor="#E4E4E4" cellspacing="1" cellpadding="2" border="0" id="tableComputer">
 			<tr bgcolor="#F1F7F9">
 				<td align="center">序号</td>
 				<td align="center">机器名称</td>
