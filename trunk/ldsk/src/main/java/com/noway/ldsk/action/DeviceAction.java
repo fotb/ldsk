@@ -1,13 +1,10 @@
 package com.noway.ldsk.action;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -18,6 +15,7 @@ import com.noway.ldsk.bo.ICompSystemBO;
 import com.noway.ldsk.bo.IReportBO;
 import com.noway.ldsk.bo.IUnmodeledDataBO;
 import com.noway.ldsk.util.AppException;
+import com.noway.ldsk.util.BranchBean;
 import com.noway.ldsk.util.BranchPropertiesLocator;
 import com.noway.ldsk.util.Constants;
 import com.noway.ldsk.util.ReportPropertiesLocator;
@@ -38,6 +36,7 @@ public class DeviceAction extends DefaultAction {
 	private String branchsJson;
 	private String branchDeviceJson;
 	
+	private List<BranchBean> bList = new ArrayList<BranchBean>();
 	
 	public String getBranchDeviceJson() {
 		return branchDeviceJson;
@@ -79,6 +78,14 @@ public class DeviceAction extends DefaultAction {
 		this.compSystemBO = compSystemBO;
 	}
 
+	public List<BranchBean> getBList() {
+		return bList;
+	}
+
+	public void setBList(List<BranchBean> list) {
+		bList = list;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public String execute() throws Exception {
@@ -88,14 +95,18 @@ public class DeviceAction extends DefaultAction {
 
 		Properties branchProp = BranchPropertiesLocator.getInstance(true).getAll();
 		final List keyList = getSortedKeyList(branchProp);
-		TreeMap map = new TreeMap();
+		//TreeMap map = new TreeMap();
 		for (Iterator iter = keyList.iterator(); iter.hasNext();) {
 			String key = (String) iter.next();
-			map.put(key.substring(3, key.length()), branchProp.getProperty(key));
+			BranchBean bean = new BranchBean();
+			bean.setBranchName(key.substring(3, key.length()));
+			bean.setBranchValue(branchProp.getProperty(key));
+			bList.add(bean);
+			//map.put(key.substring(3, key.length()), branchProp.getProperty(key));
 		}
 		
 		Map session = ActionContext.getContext().getSession();
-		session.put("BranchList", map);
+		//session.put("BranchList", map);
 		session.put("SubBranchList", new ArrayList());
 //		logger.info(getAllCount());
 		return SUCCESS;
@@ -294,21 +305,5 @@ public class DeviceAction extends DefaultAction {
 		return SUCCESS;
 	}
 	
-	@SuppressWarnings("unchecked")
-	private List getSortedKeyList(Properties branchProp) {
-		List keyList = new ArrayList();
-		for (final Iterator iter = branchProp.keySet().iterator(); iter.hasNext();) {
-			final String key = (String) iter.next();
-			keyList.add(key);
-		}
-		Collections.sort(keyList, new Comparator<String>(){
-			@Override
-			public int compare(String o1, String o2) {
-				final String key1 = o1.substring(1, 3);
-				final String key2 = o2.substring(1, 3);
-				return key1.compareTo(key2);
-			}
-		});
-		return keyList;
-	}
+	
 }

@@ -96,7 +96,7 @@ function changeSubBranchName() {
 		<table border="0">
 			<tr>
 				<td>辖区</td>
-				<td nowrap><s:select id="branchName" list="#session.BranchList" listKey="value" listValue="key" headerKey="null" headerValue="--请选择--"/></td>
+				<td nowrap><s:select id="branchName" list="bList" listKey="branchValue" listValue="branchName" headerKey="null" headerValue="--请选择--"/></td>
 				<td>分行</td>
 				<td>
 				<s:select id="subBranchName"  list="#session.SubBranchList" headerKey="null" headerValue="--全部--"/>

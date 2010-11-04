@@ -20,62 +20,132 @@ $(document).ready(function() {
 			alert("请选择支行!");
 			return false;
 		}
-		$.getJSON("/ldsk/branchDevices.action?", {branchName:branchName, ran:Math.random()},function(data){
-			var obj = $.parseJSON(data);
+		var safeType = $("#safeType").val();
+		if("null" == safeType) {
+			alert("请选择安全活动类型!");
+			return false;
+		}
+		var hipsActionType = $("#hipsActionType").val();
+		var deviceControlType = $("#deviceControlType").val();
+		if("1" == safeType && "null" == hipsActionType) {
+			alert("请选择子类!");
+			return false;
+		} else if("2" == safeType && "null" == deviceControlType) {
+			alert("请选择子类!");
+			return false;
+		}
+
+		$(window).ajaxStart(function(){
+			$("#loading").show();
 			
+		});
+		$.getJSON("/ldsk/safeReportDetailJson.action?", {branchName:branchName, safeType:safeType, hipsActionType:hipsActionType, deviceControlType:deviceControlType, ran:Math.random()},function(data){
+
+			//alert(data);
+			var obj = $.parseJSON(data);
 			//$("#test").html('test' + data[0].dellCount);
 			//alert(data[0].computerCount);
-			//alert(obj);
-
-			$("#tdTotalCount").html(obj.totalCount);
-			$("#tdDellCount").html(obj.dCount);
-			$("#tdLenovoCount").html(obj.lCount);
-			$("#tdHPCount").html(obj.hCount);
-			$("#tdOtherCount").html(obj.oCount);
-
-			$("#tableComputer").html("");
-			str = "<tr bgcolor='#F1F7F9'>";
-			str += "<td align='center'>序号</td>";
-			str += "<td align='center'>机器名称</td>";
-			str += "<td align='center'>IP地址</td>";
-			str += "<td align='center'>Mac地址</td>";
-			str += "<td align='center'>机器类型</td>";
-			str += "<td align='center'>位置</td>";
-			str += "</tr>";	
-			$("#tableComputer").append(str);	
-			if(obj.devices=="") {
-				html = "<tr bgcolor='#FFFFFF'>";
-				html += "<td align='center'>-</td>";
-				html += "<td align='center'>-</td>";
-				html += "<td align='center'>-</td>";
-				html += "<td align='center'>-</td>";
-				html += "<td align='center'>-</td>";
-				html += "<td align='center'>-</td>";
-				html += "</tr>";
-				$("#tableComputer").append(html);
-			} else {
-				$.each(obj.devices, function(i,item){
+			//alert(obj.details);
+			
+			if("1" == safeType) {
+				$("#tableHips").html("");
+				str = "<tr bgcolor='#F1F7F9'>";
+				str += "<td align='center' nowrap>序号</td>";
+				str += "<td align='center' nowrap>设备名称</td>";
+				str += "<td align='center' nowrap>IP地址</td>";
+				str += "<td align='center' nowrap>操作日期</td>";
+				str += "<td align='center' nowrap>应用程序名称</td>";
+				str += "</tr>";	
+				$("#tableHips").append(str);	
+				if(obj.details=="") {
 					html = "<tr bgcolor='#FFFFFF'>";
-					html += "<td align='center'>" + (i+1) + "</td>";
-					html += "<td>" + item.deviceName + "</td>";
-					html += "<td>" + item.tcpAddress + "</td>";
-					html += "<td>" + item.macAddress + "</td>";
-					html += "<td>" + item.model + "</td>";
-					html += "<td>" + item.position + "</td>";
+					html += "<td align='center'>-</td>";
+					html += "<td align='center'>-</td>";
+					html += "<td align='center'>-</td>";
+					html += "<td align='center'>-</td>";
+					html += "<td align='center'>-</td>";
 					html += "</tr>";
-					$("#tableComputer").append(html);
-				});	
+					$("#tableHips").append(html);
+				} else {
+					$.each(obj.details, function(i,item){
+						html = "<tr bgcolor='#FFFFFF'>";
+						html += "<td align='center'>" + item.index + "</td>";
+						html += "<td>" + item.deviceName + "</td>";
+						html += "<td>" + item.IP + "</td>";
+						html += "<td nowrap>" + item.actionDate + "</td>";
+						html += "<td>" + (item.appName).replace(/-/g, "\\") + "</td>";
+						html += "</tr>";
+						$("#tableHips").append(html);
+					});	
+				}
+				$("#tableHips").show();
+				$("#tableDc").hide();
+			} else if("2" == safeType) {
+				$("#tableDc").html("");
+				str = "<tr bgcolor='#F1F7F9'>";
+				str += "<td align='center' nowrap>序号</td>";
+				str += "<td align='center' nowrap>设备名称</td>";
+				str += "<td align='center' nowrap>IP地址</td>";
+				str += "<td align='center' nowrap>操作日期</td>";
+				str += "<td align='center' nowrap>说明</td>";
+				str += "<td align='center' nowrap>硬件ID</td>";
+				str += "</tr>";	
+				$("#tableDc").append(str);	
+				if(obj.details=="") {
+					html = "<tr bgcolor='#FFFFFF'>";
+					html += "<td align='center'>-</td>";
+					html += "<td align='center'>-</td>";
+					html += "<td align='center'>-</td>";
+					html += "<td align='center'>-</td>";
+					html += "<td align='center'>-</td>";
+					html += "<td align='center'>-</td>";
+					html += "</tr>";
+					$("#tableDc").append(html);
+				} else {
+					$.each(obj.details, function(i,item){
+						html = "<tr bgcolor='#FFFFFF'>";
+						html += "<td align='center'>" + item.index + "</td>";
+						html += "<td>" + item.deviceName + "</td>";
+						html += "<td>" + item.IP + "</td>";
+						html += "<td>" + item.actionDate + "</td>";
+						html += "<td>" + item.desc + "</td>";
+						html += "<td>" + item.deviceId + "</td>";
+						html += "</tr>";
+						$("#tableDc").append(html);
+					});	
+				}
+				$("#tableHips").hide();
+				$("#tableDc").show();
 			}
 		});
-		  return false;
+		$(window).ajaxStop(function(){
+			$("#loading").hide();
+		});
+		return false;
 	});
 
+	changeSubBranchName();
+	changeActionType();
 	$("#branchName").change(function(){
 		changeSubBranchName();
 	});
-	changeSubBranchName();
-	
+
+	$("#safeType").change(function() {
+		changeActionType();
+	});
 });
+function changeActionType() {
+	var safeTypeValue = $("#safeType :selected").val();
+
+	if("1" == safeTypeValue) {
+		$("#hipsActionType").show();
+		$("#deviceControlType").hide();
+	} else {
+		$("#hipsActionType").hide();
+		$("#deviceControlType").show();
+	}
+}
+
 function changeSubBranchName() {
 	var subBranchName = $('#branchName :selected').val();
 	if(subBranchName == "null") {
@@ -83,7 +153,7 @@ function changeSubBranchName() {
 		return;
 	}
 	var branchNameAry = subBranchName.split(",");
-	var htmlStr = "<option value='"+subBranchName+"'>--全部--</option>";
+	var htmlStr = "<option value='null'>--请选择--</option>";
 	for(i = 0; i < branchNameAry.length; i++) {
 		htmlStr = htmlStr + "<option value='"+branchNameAry[i]+"'>"+branchNameAry[i]+"</option>";
 	}
@@ -96,42 +166,35 @@ function changeSubBranchName() {
 		<table border="0">
 			<tr>
 				<td>辖区</td>
-				<td nowrap><s:select id="branchName" list="#session.BranchList" listKey="value" listValue="key" headerKey="null" headerValue="--请选择--"/></td>
+				<td nowrap><s:select id="branchName" list="bList" listKey="branchValue" listValue="branchName" headerKey="null" headerValue="--请选择--"/></td>
 				<td>分行</td>
-				<td>
-				<s:select id="subBranchName"  list="#session.SubBranchList" headerKey="null" headerValue="--全部--"/>
-				<!--<select id="sunBranchName"><option value="all">--全部--</option></select>-->
+				<td><s:select id="subBranchName"  list="#session.SubBranchList" headerKey="null" headerValue="--全部--"/></td>
+				<td>安全活动类型</td>
+				<td nowrap>
+					<select id="safeType">
+						<option value="1">主机侵入保护安全活动</option>
+						<option value="2">设备控制安全活动</option>
+					</select>
+				</td>
+				<td>子类</td>
+				<td nowrap>
+					<s:select id="hipsActionType" list="#session.hipsActionMap" listKey="key" listValue="value" headerKey="null" headerValue="--请选择--"/>
+					<s:select cssStyle="display:none;" id="deviceControlType" list="#session.deviceControlMap" listKey="key" listValue="value" headerKey="null" headerValue="--请选择--"/>
 				</td>
 				<td nowrap><input type="button" value="查询" id="searchBt"/></td>
 			</tr>
 		</table>
-		<table width="500" bgcolor="#E4E4E4" cellspacing="1" cellpadding="2" border="0" id="tableTotalComputer">
+		<br>
+		<div id="loading" style="display:none;"><img src="/ldsk/images/ajax-loader2.gif"/></div>
+		<table width="880" bgcolor="#E4E4E4" cellspacing="1" cellpadding="2" border="0" id="tableHips">
 			<tr bgcolor="#F1F7F9">
-				<td align="center" colspan="2">总计</td>
-				<td align="center">DELL机</td>
-				<td align="center">Lenovo机</td>
-				<td align="center">HP机</td>
-				<td align="center">其它品牌</td>
+				<td align="center" nowrap>序号</td>
+				<td align="center" nowrap>设备名称</td>
+				<td align="center" nowrap>IP地址</td>
+				<td align="center" nowrap>操作日期</td>
+				<td align="center" nowrap>应用程序名称</td>
 			</tr>
 			<tr bgcolor="#FFFFFF">
-				<td align="center" colspan="2" id="tdTotalCount">&nbsp;</td>
-				<td align="center" id="tdDellCount">&nbsp;</td>
-				<td align="center" id="tdLenovoCount">&nbsp;</td>
-				<td align="center" id="tdHPCount">&nbsp;</td>
-				<td align="center" id="tdOtherCount">&nbsp;</td>
-			</tr>
-</table>
-<table width="500" bgcolor="#E4E4E4" cellspacing="1" cellpadding="2" border="0" id="tableComputer">
-			<tr bgcolor="#F1F7F9">
-				<td align="center">序号</td>
-				<td align="center">机器名称</td>
-				<td align="center">IP地址</td>
-				<td align="center">Mac地址</td>
-				<td align="center">机器类型</td>
-				<td align="center">位置</td>
-			</tr>
-			<tr bgcolor="#FFFFFF">
-				<td align="center">&nbsp;</td>
 				<td align="center">&nbsp;</td>
 				<td align="center">&nbsp;</td>
 				<td align="center">&nbsp;</td>
@@ -139,7 +202,25 @@ function changeSubBranchName() {
 				<td align="center">&nbsp;</td>
 			</tr>
 		</table>
-		<div id="pageDiv"></div>
+
+		<table width="880" bgcolor="#E4E4E4" cellspacing="1" cellpadding="2" border="0" id="tableDc" style="display:none;">
+			<tr bgcolor="#F1F7F9">
+				<td align="center" nowrap>序号</td>
+				<td align="center" nowrap>设备名称</td>
+				<td align="center" nowrap>IP地址</td>
+				<td align="center" nowrap>操作日期</td>
+				<td align="center" nowrap>说明</td>
+				<td align="center" nowrap>硬件ID</td>
+			</tr>
+			<tr bgcolor="#FFFFFF">
+				<td align="center">&nbsp;</td>
+				<td align="center">&nbsp;</td>
+				<td align="center" nowrap>&nbsp;</td>
+				<td align="center">&nbsp;</td>
+				<td align="center">&nbsp;</td>
+				<td align="center">&nbsp;</td>
+			</tr>
+		</table>
 	</s:form>
 </body>
 </html>

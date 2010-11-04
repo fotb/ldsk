@@ -74,6 +74,64 @@ public class SafeReportImpl implements ISafeReport {
 			IDeviceControlActionBO deviceControlActionBO) {
 		this.deviceControlActionBO = deviceControlActionBO;
 	}
+	
+	public List getSafeDetailBySubBranchBranchAndActionType(final String subBranchName, final String safeType, final String actionCode) throws AppException {
+		final Map branchComputerMap = reportBO.getAllComputerWitchBranch();
+		final Map hipsGroupByComputerIdnMap = hipsActionBO.getHipsActionGroupByComputerIdn();
+		final Map deviceControlActionByComputerIdnMap = deviceControlActionBO.getHipsActionGroupByComputerIdn();
+		Properties branchProp = BranchPropertiesLocator.getInstance(true).getAll();
+		List keyList = getSortedKeyList(branchProp);
+
+		List List = new ArrayList();
+		
+		for (Iterator iter = keyList.iterator(); iter.hasNext();) {
+			String key = (String) iter.next();
+
+			final String[] branchNameAry = ((String)branchProp.get(key)).split(",");
+			for (int i = 0; i < branchNameAry.length; i++) {
+				final String branchName = branchNameAry[i];
+				if(subBranchName.equals(branchName)) {
+					final List computerVOList = (List) branchComputerMap.get(branchName);
+					if(null != computerVOList) {
+						for (Iterator iter1 = computerVOList.iterator(); iter1.hasNext();) {
+							final ComputerVO computerVO = (ComputerVO)iter1.next();
+							if("1".equals(safeType)) {
+								final List tempList = (List)hipsGroupByComputerIdnMap.get(computerVO.getComputerIdn());
+								if(null != tempList) {
+									List.addAll(tempList);
+								}
+							} else {
+								final List dcList = (List) deviceControlActionByComputerIdnMap.get(computerVO.getComputerIdn());
+								if (null != dcList) {
+									List.addAll(dcList);
+								}
+							}
+						}
+					}
+					break;
+				} else {
+					continue;
+				}
+			}
+		}
+		
+		List resultList = new ArrayList();
+		for (Iterator iter = List.iterator(); iter.hasNext();) {
+			Object object = (Object) iter.next();
+			if("1".equals(safeType)) {
+				HipsActionVO vo = (HipsActionVO)object;
+				if(String.valueOf(vo.getActionCode()).equals(actionCode)) {
+					resultList.add(vo);
+				}
+			} else {
+				DeviceControlActionVO vo = (DeviceControlActionVO)object;
+				if(String.valueOf(vo.getActionCode()).equals(actionCode)) {
+					resultList.add(vo);
+				}
+			}
+		}
+		return resultList;
+	}
 
 	public List<SafeReportDTO> getSafeReportDataSource() throws AppException {
 		final Map branchComputerMap = reportBO.getAllComputerWitchBranch();
@@ -150,6 +208,7 @@ public class SafeReportImpl implements ISafeReport {
 			SafeReportDTO dto = new SafeReportDTO();
 			dto.setBranchName(branchName);
 			final List list = (List)hipsMap.get(branchName);
+			
 			dto.setHipsActionCount(list.size());
 			Map hipsByCodeMap = new HashMap();
 			for (Iterator iter2 = list.iterator(); iter2.hasNext();) {

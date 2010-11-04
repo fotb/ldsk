@@ -46,8 +46,8 @@ public class Constants {
 	public static final Map<String, String> DEVICE_CONTROL_ACTION_MAP = new HashMap<String, String>();
 	static {
 		DEVICE_CONTROL_ACTION_MAP.put(DEVICE_CONTROL_ACTION_CODE_115, "已禁用存储设备");
-		DEVICE_CONTROL_ACTION_MAP.put(DEVICE_CONTROL_ACTION_CODE_116, "已禁用CD/DVD设备");
-		DEVICE_CONTROL_ACTION_MAP.put(DEVICE_CONTROL_ACTION_CODE_117, "其他禁用设备");
+		//DEVICE_CONTROL_ACTION_MAP.put(DEVICE_CONTROL_ACTION_CODE_116, "已禁用CD/DVD设备");
+		//DEVICE_CONTROL_ACTION_MAP.put(DEVICE_CONTROL_ACTION_CODE_117, "其他禁用设备");
 	};
 		
 	public static final String REPORT_HEADER_COMPUTERNAME = "report.header.computername";
