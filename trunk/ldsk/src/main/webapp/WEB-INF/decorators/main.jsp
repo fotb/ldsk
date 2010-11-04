@@ -31,9 +31,7 @@
     		}, function() {
     		});
     		if (document.all) {
-        		alert("1");
     			$("#nav-one li").hoverClass("sfHover");
-    			alert("2");
     		}
     	});
 
