@@ -152,7 +152,8 @@ public class SafeReportAction extends DefaultAction {
 		final String safeType = request.getParameter("safeType");
 		final String hipsActionCode = request.getParameter("hipsActionType");
 		final String deviceControlCode = request.getParameter("deviceControlType");
-    	
+
+		logger.info("branchName: --------------" + branchName + "-safeType:-" + safeType + "--hipsActionCode:-" + hipsActionCode + "-deviceControlCode:-" + deviceControlCode  );
 		try {
 			Map ipMap = reportBO.findAllIpAddress();
 	    	Map computerMap = computerBO.findAllToMap();
