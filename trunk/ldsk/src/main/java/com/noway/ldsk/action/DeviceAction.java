@@ -143,6 +143,7 @@ public class DeviceAction extends DefaultAction {
 			for (Iterator iterator = keyList.iterator(); iterator
 					.hasNext();) {
 				final String key = (String) iterator.next();
+				logger.info("key: " + key);
 				branchBuffer.append("{");
 				branchBuffer.append(addJsonNode("BranchName", key.substring(3, key.length()), false));
 				
@@ -155,7 +156,7 @@ public class DeviceAction extends DefaultAction {
 				for (int i = 0; i < branchNameAry.length; i++) {
 					final String branchName = branchNameAry[i];
 					List computerVOList = (List) branchMap.get(branchName);
-					
+					logger.debug(computerVOList.size());
 					if(null != computerVOList) {
 				        for (Iterator iter = computerVOList.iterator(); iter.hasNext();) {
 							ComputerVO vo = (ComputerVO) iter.next();
@@ -209,7 +210,8 @@ public class DeviceAction extends DefaultAction {
 		try {
 			HttpServletRequest request = (HttpServletRequest) ActionContext
 					.getContext().get(ServletActionContext.HTTP_REQUEST);
-			final String branchName = request.getParameter("branchName");			
+			final String branchName = request.getParameter("branchName");	
+			logger.info("branchName: --------------" + branchName);
 			
 			final Map branchMap = reportBO.getAllComputerWitchBranch();
 			final Map ipMap = reportBO.findAllIpAddress();
@@ -226,7 +228,6 @@ public class DeviceAction extends DefaultAction {
 	        int lCount = 0;
 	        int hCount = 0;
 	        int otherCount = 0;
-			int count = 0;
 			StringBuffer deviceBuffer = new StringBuffer(1000);
 			deviceBuffer.append("[");
 	        
@@ -236,6 +237,7 @@ public class DeviceAction extends DefaultAction {
 				final String bName = branchNameAry[i];
 				final List computerVOList = (List)branchMap.get(bName);
 				if(null != computerVOList) {
+					int count = 0;
 					for (Iterator iter = computerVOList.iterator(); iter.hasNext();) {
 						ComputerVO vo = (ComputerVO) iter.next();
 						deviceBuffer.append("{");
@@ -278,6 +280,9 @@ public class DeviceAction extends DefaultAction {
 						if(count < computerVOList.size()) {
 							deviceBuffer.append(",");	
 						}
+					}
+					if(i < branchNameAry.length - 1) {
+						deviceBuffer.append(",");
 					}
 				}
 			}
